@@ -11,21 +11,23 @@ mongoose.connect(url)
   .catch((error) => {
     console.log('error connecting to MongoDB',error.message)
   })
-
+const re = /\d{2}-\d{5}|\d{3}-\d{4}/
+function validator(v){
+  console.log('test: ',re.test(v))
+  return re.test(v)
+}
+const custom = [validator,'invalid number']
 const personSchema = new mongoose.Schema({
-
   name: {
     type: String,
     minlength: 3,
-    required: true },
+    required: true
+  },
   number: {
     type: String,
-    validate: {
-      validator: function(v){
-        return(/\d{3}-\d{5}/.test(v) || /\d{2}-\d{6}/.test(v))
-      },
-      required: [true, 'Valid Number required']
-    } },
+    validate: custom,
+    required: true,
+  },
 })
 
 personSchema.set('toJSON',{
